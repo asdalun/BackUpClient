@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<dbinfo>
+	<!-- Socket连接间隔时间 -->
+	<Interval>5000</Interval>
+	<!-- SQL Server 数据库配置 -->
+	<sql servername="10.101.9.126" dbname="checknew2" username="sa" password="1z2x3c4v"/>
+	<!-- <sql servername="128.13.8.111" dbname="HouseProperty" username="sa" password="ZykJtyh2017"/> -->
+	
+    <cmditem value="local">
+    	<!-- 10.211.55.31 10.101.9.37  10.101.9.14 root building-->
+        <item localip="10.103.5.36" port1="36666" port2="36667" serverip="10.101.9.37" />
+    </cmditem>
+    <cmditem value="sql">
+        <item dbname="checknew2" username="sa" password="1z2x3c4v" bfpath="c:\dbback" uploadpath="bbbbb" />
+    </cmditem>
+    <cmditem value="oracle">
+        <item dbname="dbsism" username="dbsism" password="dbsism" servername="ora10g" bfpath="/opt/backdata" uploadpath="wwwww" />
+    </cmditem>
+    <cmditem value="db2">
+    	<item dbname="reporter" port="50001" username="db2inst1" password="Passw0rd" servername="10.101.10.135" 
+    			bfpath="c://dbback" uploadpath="wwwww" />
+    	<item dbname="warehous" port="50001" username="db2inst1" password="Passw0rd" servername="10.101.10.135" 
+    			bfpath="c://dbback" uploadpath="wwwww" />
+    </cmditem>
+
+    <cmditem value="ftp">
+        <item ip="10.103.5.36" username="ftpTest001" password="Test001" port="21"/>
+    </cmditem>
+    <cmditem value="cmd">
+    </cmditem>
+</dbinfo>
