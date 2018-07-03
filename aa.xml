@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <dbinfo>
-	<!-- Socket连接间隔时间 -->
+	<!--111 Socket连接间隔时间 -->
 	<Interval>5000</Interval>
 	<!-- SQL Server 数据库配置 -->
 	<sql servername="10.101.9.126" dbname="checknew2" username="sa" password="1z2x3c4v"/>
