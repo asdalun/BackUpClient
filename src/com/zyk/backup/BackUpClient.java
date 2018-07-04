@@ -1,6 +1,5 @@
 package com.zyk.backup;
-//111
-import java.util.Timer;
+
 import java.util.TimerTask;
 import org.apache.log4j.Logger;
 
@@ -13,8 +12,8 @@ public class BackUpClient {
 	private BackUp bu2;
 	//保持应配置项
 	private ConfigManager cm;
-	private Timer runTimer1;
-	private Timer runTimer2;
+	//private Timer runTimer1;
+	//private Timer runTimer2;
 	
 	public static void main(String[] args) {
 		BackUpClient buc = new BackUpClient();
@@ -97,11 +96,15 @@ public class BackUpClient {
 		try {
 			//初始化配置信息
 			cm = new ConfigManager();
-			bu1 = null;
-			bu2 = null;
-
-			runTimer2 = new Timer();
-			runTimer2.schedule(bfTask2, 0, cm.getInterval());
+			ReceiveMessage rm1 = new ReceiveMessage(cm.getServerConfig(), "ReceiveThread1");
+			rm1.start();
+			ReceiveMessage rm2 = new ReceiveMessage(cm.getServerConfig(), "ReceiveThread2");
+			rm2.start();
+//			bu1 = null;
+//			bu2 = null;
+//
+//			runTimer2 = new Timer();
+//			runTimer2.schedule(bfTask2, 0, cm.getInterval());
 //			Thread.sleep(3000);
 //			runTimer1 = new Timer();
 //			runTimer1.schedule(bfTask1, 0, cm.getInterval());
