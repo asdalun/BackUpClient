@@ -47,7 +47,7 @@ public class UpLoadToFTP extends Thread{
 		FTPManager fm = new FTPManager(this.cm.getFTPConfig());
         String re = fm.UploadFile(this.bfPath, this.fileName, this.uploadPath);
         if (re == "success") {
-        	logger.error("upload success!");
+        	logger.info("upload success!");
         }
         else {
         	logger.error("Upload happen error. The next time will be try again...");

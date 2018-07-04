@@ -31,9 +31,10 @@ public class BackUpOracle extends Thread{
 	 * @param cl
 	 * @param tn
 	 */
-	public BackUpOracle(String tn, String cl) {
+	public BackUpOracle(String tn, String cl, ConfigManager _cm) {
 		this.threadName = tn;
 		this.commandLine = cl;
+		this.cm = _cm;
 	}
 	/**
 	 * 执行接收消息线程

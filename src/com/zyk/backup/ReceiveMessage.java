@@ -20,9 +20,9 @@ public class ReceiveMessage extends Thread{
 	 */
 	private Thread t;
 	/**
-	 * 服务器配置对象
+	 * 配置对象
 	 */
-	private ServerConfig serverConfig;
+	private ConfigManager cm;
 	/**
 	 * 线程名称
 	 */
@@ -41,13 +41,13 @@ public class ReceiveMessage extends Thread{
 	 * @param sc
 	 * @param tn
 	 */
-	public ReceiveMessage(ServerConfig sc, String tn) {
-		this.serverConfig = sc;
+	public ReceiveMessage(ConfigManager _cm, String tn) {
+		this.cm = _cm;
 		this.threadName = tn;
 		if (this.threadName == "ReceiveThread1") 
-			curPort = this.serverConfig.getPort1();
+			curPort = this.cm.getServerConfig().getPort1();
 		else if (this.threadName == "ReceiveThread2")
-			curPort = this.serverConfig.getPort2();
+			curPort = this.cm.getServerConfig().getPort2();
 	}
 	/**
 	 * 执行接收消息线程
@@ -58,7 +58,7 @@ public class ReceiveMessage extends Thread{
 			SocketChannel sc = null;
 			String responseLine = "";
 			try {
-				InetAddress address = InetAddress.getByName(this.serverConfig.getServerIP());
+				InetAddress address = InetAddress.getByName(this.cm.getServerConfig().getServerIP());
 				sc = SocketChannel.open(new InetSocketAddress(address, curPort));
 				logger.info(this.threadName + " Connect success!");
 				//连接成功 初始化流
@@ -105,7 +105,7 @@ public class ReceiveMessage extends Thread{
         switch(cmd) {
         case "backoracle":
         	logger.info(curPort + " Ready to Backup Oracle DB: " + dbname);
-        	BackUpOracle bo = new BackUpOracle("BackUpOracleThread", this.receiveStr);
+        	BackUpOracle bo = new BackUpOracle("BackUpOracleThread", this.receiveStr, this.cm);
         	bo.start();
         	break;
         case "db2":

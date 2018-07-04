@@ -96,9 +96,9 @@ public class BackUpClient {
 		try {
 			//初始化配置信息
 			cm = new ConfigManager();
-			ReceiveMessage rm1 = new ReceiveMessage(cm.getServerConfig(), "ReceiveThread1");
+			ReceiveMessage rm1 = new ReceiveMessage(cm, "ReceiveThread1");
 			rm1.start();
-			ReceiveMessage rm2 = new ReceiveMessage(cm.getServerConfig(), "ReceiveThread2");
+			ReceiveMessage rm2 = new ReceiveMessage(cm, "ReceiveThread2");
 			rm2.start();
 //			bu1 = null;
 //			bu2 = null;
