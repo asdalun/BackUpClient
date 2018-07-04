@@ -24,10 +24,6 @@ public class BackUp {
 	 */
 	private ConfigManager cm;
 	/**
-	 * 接收命令线程
-	 */
-	private ReceiveThread receiveTherad;
-	/**
 	 * 当前备份状态 0: 初始状态；1: 正接收数据；2: 执行备份数据库；3: 上传数据；
 	 */
 	private short backupState;
