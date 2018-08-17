@@ -5,11 +5,11 @@ import java.util.Date;
 
 import org.apache.log4j.Logger;
 
-public class BackUpOracle extends Thread{
+public class BackUpDB2 extends Thread {
 	/**
 	 * 缓存日志
 	 */
-	private static Logger logger = Logger.getLogger(BackUpOracle.class);
+	private static Logger logger = Logger.getLogger(BackUpDB2.class);
 	/**
 	 * 执行线程
 	 */
@@ -22,12 +22,8 @@ public class BackUpOracle extends Thread{
 	 * 接收的命令串
 	 */
 	private String commandLine;
-	/**
-	 * 构造函数
-	 * @param cl
-	 * @param tn
-	 */
-	public BackUpOracle(String tn, String cl) {
+	
+	public BackUpDB2(String tn, String cl) {
 		this.threadName = tn;
 		this.commandLine = cl;
 	}
@@ -47,10 +43,10 @@ public class BackUpOracle extends Thread{
 		Date now = new Date(); 
 		String updateSql = "update t_soft_dayly_back_new set c_send_time='" + now.toString() + "' where i_id=" + id;
 		ConfigManager.getInstance().getSQLServerManager().executeSQL(updateSql);
-		for (int i = 0; i < ConfigManager.getInstance().getOracleConfig().size(); i++) {       //查找本机中的数据库
-			if (dbname.compareTo(ConfigManager.getInstance().getOracleConfig().get(i).getDBName()) == 0) {
-				if (ConfigManager.getInstance().getOracleConfig().get(i).getUserName() != "") {
-					if (this.bakcupOneOracle(ConfigManager.getInstance().getOracleConfig().get(i), backname)) {
+		for (int i = 0; i < ConfigManager.getInstance().getDB2Config().size(); i++) {       //查找本机中的数据库
+			if (dbname.compareTo(ConfigManager.getInstance().getDB2Config().get(i).getDBName()) == 0) {
+				if (ConfigManager.getInstance().getDB2Config().get(i).getUserName() != "") {
+					if (this.backupOneDB2(ConfigManager.getInstance().getDB2Config().get(i), backname)) {
 						//发送消息暂时屏蔽，等待上传完成后，再进行调试
 //						String msg = id + "|" + ip + "|" + "upload|" + dbname + "|" + backname + ".dmp" + "|"
 //								+ this.cm.getOracleConfig().get(i).getBFPath() + "|" 
@@ -60,9 +56,9 @@ public class BackUpOracle extends Thread{
 						//this.uploadToFTP(this.cm.getOracleConfig().get(i).getBFPath(), backname + ".dmp", this.cm.getOracleConfig().get(i).getUploadPath());
 						//this.resetBackUp();
 						UpLoadToFTP uf = new UpLoadToFTP("UpLoadToFTPThread", 
-								ConfigManager.getInstance().getOracleConfig().get(i).getBFPath(), 
+								ConfigManager.getInstance().getDB2Config().get(i).getBFPath(), 
 								backname + ".dmp",
-								ConfigManager.getInstance().getOracleConfig().get(i).getUploadPath());
+								ConfigManager.getInstance().getDB2Config().get(i).getUploadPath());
 						uf.start();
 						break;
 					}
@@ -71,28 +67,25 @@ public class BackUpOracle extends Thread{
 		}
 	}
 	/**
-	 * 执行备份oracle数据库的操作
-	 * oc: oracle数据库的备份信息
+	 * 执行备份DB2数据库的操作
+	 * db2c: db2数据库的备份信息
 	 * backname：备份文件名称
 	 */
-	public Boolean bakcupOneOracle(OracleConfig oc, String backname) {
-		File saveFile = new File(oc.getBFPath());
+	public Boolean backupOneDB2(DB2Config db2c, String backname) {
+		//db2 backup db tony online to /home/db2inst/db2backup
+		File saveFile = new File(db2c.getBFPath());
 		if (!saveFile.exists()) {// 假设文件夹不存在
 			saveFile.mkdirs();   // 创建文件夹
 		}
 		try {
-			logger.info(this.threadName + " Backup command: " + "exp " + oc.getUserName() + "/" + oc.getPassword() + " file=" + oc.getBFPath() + 
-					"/" + backname + ".dmp");
-			Process process = Runtime.getRuntime().exec("exp " + oc.getUserName() + "/" + oc.getPassword() + " file=" + oc.getBFPath() + 
-					"/" + backname + ".dmp");
-			
+			Process process = Runtime.getRuntime().exec("db2 backup db " + db2c.getDBName() + " online to " + db2c.getBFPath() + " " + 
+							backname + " compress");
 			if(process.waitFor() == 0) {      //0 表示线程正常终止。 
-				logger.info(this.threadName + " Backup oracle db success: " + backname);
 				return true;
 			}
 		} 
-		catch (Exception e) {
-			logger.error(this.threadName + " Backup Oracle DB have errors: " + oc.getDBName() + " " + e.toString());
+			catch (Exception e) {
+			logger.error(this.threadName + "Backup Oracle DB2 have errors: " + db2c.getDBName() + " " + e.toString());
 		}
 		return false;
 	}

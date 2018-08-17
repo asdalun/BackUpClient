@@ -20,10 +20,6 @@ public class ReceiveMessage extends Thread{
 	 */
 	private Thread t;
 	/**
-	 * 配置对象
-	 */
-	private ConfigManager cm;
-	/**
 	 * 线程名称
 	 */
 	private String threadName;
@@ -35,30 +31,29 @@ public class ReceiveMessage extends Thread{
 	 * 接收到的字符串
 	 */
 	private String receiveStr;
-	
 	/**
 	 * 构造函数
 	 * @param sc
 	 * @param tn
 	 */
-	public ReceiveMessage(ConfigManager _cm, String tn) {
-		this.cm = _cm;
+	public ReceiveMessage(String tn) {
 		this.threadName = tn;
-		if (this.threadName == "ReceiveThread1") 
-			curPort = this.cm.getServerConfig().getPort1();
-		else if (this.threadName == "ReceiveThread2")
-			curPort = this.cm.getServerConfig().getPort2();
+		if (this.threadName == "T1") 
+			curPort = ConfigManager.getInstance().getServerConfig().getPort1();
+		else if (this.threadName == "T2")
+			curPort = ConfigManager.getInstance().getServerConfig().getPort2();
 	}
 	/**
 	 * 执行接收消息线程
 	 */
 	public void run() {
+		int fail_cn = 0;            //连接失败次数
 		while (true) {
-			logger.info(this.threadName + " Ready to connect...");
+			//logger.info(this.threadName + " Ready to connect...");
 			SocketChannel sc = null;
 			String responseLine = "";
 			try {
-				InetAddress address = InetAddress.getByName(this.cm.getServerConfig().getServerIP());
+				InetAddress address = InetAddress.getByName(ConfigManager.getInstance().getServerConfig().getServerIP());
 				sc = SocketChannel.open(new InetSocketAddress(address, curPort));
 				logger.info(this.threadName + " Connect success!");
 				//连接成功 初始化流
@@ -76,7 +71,19 @@ public class ReceiveMessage extends Thread{
 				sc.close();
 			}
 			catch(Exception ex) {
-				logger.error(this.threadName + " Connect error: " + ex.toString());
+				if (this.threadName == "T1")
+					logger.error(this.threadName + " Connect error: " + ex.toString());
+				else {
+					if (fail_cn == 0) {
+						logger.error(this.threadName + " connect error; ready to add! " + ex.toString());
+					}
+					fail_cn++;
+					//logger.error("the cn is :" + fail_cn);
+					if (fail_cn >= ConfigManager.getInstance().getMaxCN()) { 
+						logger.error(this.threadName + " connect error to max count!");
+						fail_cn = 0;
+					}
+				}
 				try {
 					//连接失败以后程序暂停5秒
 					Thread.sleep(5000);
@@ -105,11 +112,13 @@ public class ReceiveMessage extends Thread{
         switch(cmd) {
         case "backoracle":
         	logger.info(curPort + " Ready to Backup Oracle DB: " + dbname);
-        	BackUpOracle bo = new BackUpOracle("BackUpOracleThread", this.receiveStr, this.cm);
+        	BackUpOracle bo = new BackUpOracle("BackUpOracleThread", this.receiveStr);
         	bo.start();
         	break;
         case "db2":
         	logger.info(curPort + " Ready to Backup DB2: " + dbname);
+        	BackUpDB2 bd = new BackUpDB2("BackUpDB2Thread",  this.receiveStr);
+        	bd.start();
         	//backupDB2(id, ip, dbname, backname);
         	break;
         case "upload":

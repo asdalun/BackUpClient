@@ -12,10 +12,6 @@ public class UpLoadToFTP extends Thread{
 	 */
 	private Thread t;
 	/**
-	 * 服务器配置对象
-	 */
-	private ConfigManager cm;
-	/**
 	 * 线程名称
 	 */
 	private String threadName;
@@ -32,19 +28,18 @@ public class UpLoadToFTP extends Thread{
 	 */
 	private String uploadPath;
 	
-	public UpLoadToFTP(String tn, String bp, String fn, String up, ConfigManager _cm) {
+	public UpLoadToFTP(String tn, String bp, String fn, String up) {
 		// TODO Auto-generated constructor stub
 		this.threadName = tn;
 		this.bfPath = bp;
 		this.fileName = fn;
 		this.uploadPath = up;
-		this.cm = _cm;
 	}
 	
 	public void run() {
 		logger.info("Ready to upload file...");
 		//logger.info(msg);
-		FTPManager fm = new FTPManager(this.cm.getFTPConfig());
+		FTPManager fm = new FTPManager(ConfigManager.getInstance().getFTPConfig());
         String re = fm.UploadFile(this.bfPath, this.fileName, this.uploadPath);
         if (re == "success") {
         	logger.info("upload success!");

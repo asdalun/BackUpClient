@@ -10,6 +10,14 @@ import org.dom4j.io.SAXReader;
 
 public class ConfigManager {
 	/**
+	 * 单例
+	 */
+	private static ConfigManager cm;
+	/**
+	 * 当前系统的版本号
+	 */
+	private String curVer = "0.02";
+	/**
 	 * 缓存日志
 	 */
 	private static Logger logger = Logger.getLogger(ConfigManager.class);
@@ -41,6 +49,18 @@ public class ConfigManager {
 	 * 启动备份线程间隔秒数
 	 */
 	private long interval;
+	/**
+	 * 连接失败次数最大默认为2000次，2000次一告警
+	 */
+	private int MAX_FAIL_CN;
+	/**
+	 * 升级xml文件的url
+	 */
+	private String upgradeXMLURL;
+	/**
+	 * 需要升级的jar包的url
+	 */
+	private String upgradeJarURL;
 	
 	ConfigManager() {
 		this.serverConfig = new ServerConfig();
@@ -49,6 +69,7 @@ public class ConfigManager {
 		this.db2Config_Ary = new ArrayList<DB2Config>();
 		this.ftpConfig = new FTPConfig();
 		interval = 10000;
+		MAX_FAIL_CN = 2000;
 		this.loadConfig();
 	}
 	/**
@@ -61,6 +82,12 @@ public class ConfigManager {
 			Element dbinfo = document.getRootElement();
 			Element intervalItem = dbinfo.element("Interval");
 			interval = Long.parseLong(intervalItem.getText());
+			Element maxcnItem = dbinfo.element("MaxCN");
+			this.MAX_FAIL_CN = Integer.parseInt(maxcnItem.getText());
+			Element upgradeXMLItem = dbinfo.element("UpgradeXML");
+			this.upgradeXMLURL = upgradeXMLItem.getText();
+			Element upgradeJarItem = dbinfo.element("UpgradeJar");
+			this.upgradeJarURL = upgradeJarItem.getText();
 			Element sqlItem = dbinfo.element("sql");
 			this.sqlServerManager.setServerName(sqlItem.attributeValue("servername"));
 			this.sqlServerManager.setDBName(sqlItem.attributeValue("dbname"));
@@ -69,7 +96,9 @@ public class ConfigManager {
 			Iterator<?> it = dbinfo.elementIterator();
 			while (it.hasNext()) {
 				Element cmdItem = (Element)it.next();
-				if (cmdItem.getName().compareTo("Interval") == 0 || cmdItem.getName().compareTo("sql") == 0) {
+				if (cmdItem.getName().compareTo("Interval") == 0 || cmdItem.getName().compareTo("sql") == 0 
+						|| cmdItem.getName().compareTo("MaxCN") == 0 || cmdItem.getName().compareTo("UpgradeXML") == 0
+						|| cmdItem.getName().compareTo("UpgradeJar") == 0) {
 					continue;
 				}
 				String itemValue = cmdItem.attributeValue("value");
@@ -127,7 +156,7 @@ public class ConfigManager {
 			}
 		}
 		catch (Exception ex) {
-			logger.error("加载配置文件错误：" + ex.toString());
+			logger.error("load xml error: " + ex.toString());
 		}
 	}
 	
@@ -153,6 +182,29 @@ public class ConfigManager {
 	
 	public FTPConfig getFTPConfig() {
 		return this.ftpConfig;
+	}
+	
+	public int getMaxCN() {
+		return this.MAX_FAIL_CN;
+	}
+	
+	public String getUpgradeXMLURL() {
+		return this.upgradeXMLURL;
+	}
+	
+	public String getUpgradeJarURL() {
+		return this.upgradeJarURL;
+	}
+	
+	public String getCurVersion() {
+		return this.curVer;
+	}
+	
+	public static ConfigManager getInstance() {
+		if (cm == null) {
+			cm = new ConfigManager();
+		}
+		return cm;
 	}
 }
 

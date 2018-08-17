@@ -156,9 +156,9 @@ public class BackUp {
 	 */
 	public void backupOracle(String id, String ip, String dbname, String backname, 
 			String  c_flog, String savename) {
-		Date now = new Date(); 
-		String updateSql = "update t_soft_dayly_back_new set c_send_time='" + now.toString() + "' where i_id=" + id;
-		this.cm.getSQLServerManager().executeSQL(updateSql);
+		//Date now = new Date(); 
+		//String updateSql = "update t_soft_dayly_back_new set c_send_time='" + now.toString() + "' where i_id=" + id;
+		//this.cm.getSQLServerManager().executeSQL(updateSql);
 		for (int i = 0; i < this.cm.getOracleConfig().size(); i++) {       //查找本机中的数据库
 			if (dbname.compareTo(this.cm.getOracleConfig().get(i).getDBName()) == 0) {
 				if (this.cm.getOracleConfig().get(i).getUserName() != "") {
@@ -221,6 +221,10 @@ public class BackUp {
 			if (dbname.compareTo(this.cm.getDB2Config().get(i).getDBName()) == 0) {
 				if (this.cm.getDB2Config().get(i).getUserName() != "") {
 					if (this.backupOneDB2(this.cm.getDB2Config().get(i), backname)) {
+						this.backupState = 3;
+						//需要根据备份后的名称进行上传
+						this.uploadToFTP(this.cm.getOracleConfig().get(i).getBFPath(), backname + ".dmp", this.cm.getOracleConfig().get(i).getUploadPath());
+						//this.resetBackUp();
 						break;
 					}
 				}
