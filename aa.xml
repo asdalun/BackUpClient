@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <dbinfo>
-	<!--111 Socket连接间隔时间 -->
-	<Interval>5000</Interval>
+	<!--t连接间隔时间(连接失败后的间隔时间，更新系统的间隔时间)-->
+	<Interval>30000</Interval>
 	<MaxCN>2000</MaxCN>
 	<UpgradeXML>http://10.101.10.235/upgrade.xml</UpgradeXML>
 	<UpgradeJar>http://10.101.10.235/BackUpClient.jar</UpgradeJar>

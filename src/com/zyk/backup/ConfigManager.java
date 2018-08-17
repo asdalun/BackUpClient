@@ -16,7 +16,7 @@ public class ConfigManager {
 	/**
 	 * 当前系统的版本号
 	 */
-	private String curVer = "0.02";
+	private String curVer = "0.05";
 	/**
 	 * 缓存日志
 	 */

@@ -48,11 +48,11 @@ public class CheckUpgrade {
             	Element autoug = root.element("autoupgrade");
             	//logger.info(autoug.getText());
             	if ("1".compareTo(autoug.getText().trim()) == 0) {
-            		logger.info("1");
+            		//logger.info("1");
             		return true;
             	}
             	else {
-            		logger.info("2");
+            		//logger.info("2");
             		return false;
             	}
             		

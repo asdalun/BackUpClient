@@ -47,7 +47,6 @@ public class ReceiveMessage extends Thread{
 	 * 执行接收消息线程
 	 */
 	public void run() {
-		int fail_cn = 0;            //连接失败次数
 		while (true) {
 			//logger.info(this.threadName + " Ready to connect...");
 			SocketChannel sc = null;
@@ -70,23 +69,28 @@ public class ReceiveMessage extends Thread{
 				this.receiveEnd(responseLine);
 				sc.close();
 			}
+//			catch(IOException ex) {
+//				if (fail_cn == 0) {
+//					logger.error(this.threadName + " connect error; ready to add! " + ex.toString());
+//				}
+//				fail_cn++;
+//				if (fail_cn >= ConfigManager.getInstance().getMaxCN()) { 
+//					logger.error(this.threadName + " connect error to max count! " + ex.toString());
+//					fail_cn = 0;
+//				}
+//				try {
+//					Thread.sleep(ConfigManager.getInstance().getInterval());
+//				}
+//				catch(Exception ex1) {
+//					
+//				}
+//			}
 			catch(Exception ex) {
-				if (this.threadName == "T1")
+				if (this.threadName.compareTo("T1") == 0) {
 					logger.error(this.threadName + " Connect error: " + ex.toString());
-				else {
-					if (fail_cn == 0) {
-						logger.error(this.threadName + " connect error; ready to add! " + ex.toString());
-					}
-					fail_cn++;
-					//logger.error("the cn is :" + fail_cn);
-					if (fail_cn >= ConfigManager.getInstance().getMaxCN()) { 
-						logger.error(this.threadName + " connect error to max count!");
-						fail_cn = 0;
-					}
 				}
 				try {
-					//连接失败以后程序暂停5秒
-					Thread.sleep(5000);
+					Thread.sleep(ConfigManager.getInstance().getInterval());
 				}
 				catch(Exception ex1) {
 					
