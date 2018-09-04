@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <dbinfo>
 	<!--t连接间隔时间(连接失败后的间隔时间，更新系统的间隔时间)-->
-	<Interval>30000</Interval>
+	<Interval>10000</Interval>
 	<MaxCN>2000</MaxCN>
-	<UpgradeXML>http://10.101.10.235/upgrade.xml</UpgradeXML>
-	<UpgradeJar>http://10.101.10.235/BackUpClient.jar</UpgradeJar>
+	<UpgradeXML>http://10.103.5.36/de/upgrade.xml</UpgradeXML>
+	<UpgradeJar>http://10.103.5.36/de/BackUpClient.jar</UpgradeJar>
 	<!-- SQL Server 数据库配置 -->
 	<sql servername="10.101.9.126" dbname="checknew2" username="sa" password="1z2x3c4v"/>
 	<!-- <sql servername="128.13.8.111" dbname="HouseProperty" username="sa" password="ZykJtyh2017"/> -->
@@ -17,7 +17,7 @@
         <item dbname="checknew2" username="sa" password="1z2x3c4v" bfpath="c:\dbback" uploadpath="bbbbb" />
     </cmditem>
     <cmditem value="oracle">
-        <item dbname="dbsism" username="dbsism" password="dbsism" servername="ora10g" bfpath="/oracle" uploadpath="wwwww" />
+        <item dbname="AAKIUFO" username="AAKIUFO" password="AAKIUFO" servername="ora10g" bfpath="/opt/app/oracle/budata" uploadpath="wwwww" />
     </cmditem>
     <cmditem value="db2">
     	<item dbname="reporter" port="50001" username="db2inst1" password="Passw0rd" servername="10.101.10.135" 

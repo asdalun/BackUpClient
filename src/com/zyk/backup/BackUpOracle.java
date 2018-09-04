@@ -1,7 +1,11 @@
 package com.zyk.backup;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -81,20 +85,34 @@ public class BackUpOracle extends Thread{
 			saveFile.mkdirs();   // 创建文件夹
 		}
 		try {
-			logger.info(this.threadName + " Backup command: " + "exp " + oc.getUserName() + "/" + oc.getPassword() + " file=" + oc.getBFPath() + 
-					"/" + backname + ".dmp");
-			Process process = Runtime.getRuntime().exec("exp " + oc.getUserName() + "/" + oc.getPassword() + " file=" + oc.getBFPath() + 
-					"/" + backname + ".dmp");
+//			logger.info(this.threadName + " Backup command: " + "exp " + oc.getUserName() + "/" + oc.getPassword() + " file=" + oc.getBFPath() + 
+//					"/" + backname + ".dmp");
+//			Process process = Runtime.getRuntime().exec("exp " + oc.getUserName() + "/" + oc.getPassword() + " file=" + oc.getBFPath() + 
+//					"/" + backname + ".dmp");
+//			ReadBuffered rb_info = new ReadBuffered(process, "info");
+//			rb_info.start();
+//			ReadBuffered rb_err = new ReadBuffered(process, "err");
+//			rb_err.start();
+//			process.waitFor();
 			
-			if(process.waitFor() == 0) {      //0 表示线程正常终止。 
-				logger.info(this.threadName + " Backup oracle db success: " + backname);
-				return true;
-			}
+			List<String> cmdList = Arrays.asList("exp", oc.getUserName() + "/" + oc.getPassword(), "file=" + oc.getBFPath() + "/" + backname + ".dmp" );
+			ProcessBuilder pb = new ProcessBuilder(cmdList);
+			pb.redirectErrorStream(true);
+			Process process = pb.start();
+			BufferedReader reader=new BufferedReader(new InputStreamReader(process.getInputStream()));  
+	        String line=null;  
+	        while((line=reader.readLine())!=null){  
+	        	logger.info(line);  
+	        }    
+	        process.waitFor();
+			logger.info(this.threadName + " Backup oracle db success: " + backname);
+			return true;
 		} 
 		catch (Exception e) {
 			logger.error(this.threadName + " Backup Oracle DB have errors: " + oc.getDBName() + " " + e.toString());
+			return false;
 		}
-		return false;
+		
 	}
 	
 	public void start() {

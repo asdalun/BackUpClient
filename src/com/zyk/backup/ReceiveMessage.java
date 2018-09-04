@@ -47,6 +47,15 @@ public class ReceiveMessage extends Thread{
 	 * 执行接收消息线程
 	 */
 	public void run() {
+		//测试代码
+		if (this.threadName == "T3") {
+			this.receiveStr = "";
+			String responseLine_t = "14818|100.192.100.3|backoracle|AAKIUFO|LDP10210001_A_AAKIUFO_20180831|A|LDP10210001_A_AAKIUFO";
+			this.receiveEnd(responseLine_t);
+			return;
+		}
+
+		
 		while (true) {
 			//logger.info(this.threadName + " Ready to connect...");
 			SocketChannel sc = null;
@@ -86,11 +95,16 @@ public class ReceiveMessage extends Thread{
 //				}
 //			}
 			catch(Exception ex) {
-				if (this.threadName.compareTo("T1") == 0) {
-					logger.error(this.threadName + " Connect error: " + ex.toString());
-				}
+//				if (this.threadName.compareTo("T1") == 0) {
+//					logger.error(this.threadName + " Connect error: " + ex.toString());
+//				}
 				try {
-					Thread.sleep(ConfigManager.getInstance().getInterval());
+					
+					int interval = (int) ConfigManager.getInstance().getInterval();
+					if (this.threadName.compareTo("T1") == 0) {
+						logger.error(this.threadName + " Connect error: " + ex.toString());
+					}
+					Thread.sleep(interval);
 				}
 				catch(Exception ex1) {
 					
@@ -113,25 +127,35 @@ public class ReceiveMessage extends Thread{
 //        String backname = cmds[4];//上传的备份文件名称
 //        String c_flog = cmds[5];  //备份标识
 //        String savename = cmds[6];//本地保存文件名
-        switch(cmd) {
-        case "backoracle":
+        if (cmd.compareTo("backoracle") == 0) {
         	logger.info(curPort + " Ready to Backup Oracle DB: " + dbname);
         	BackUpOracle bo = new BackUpOracle("BackUpOracleThread", this.receiveStr);
         	bo.start();
-        	break;
-        case "db2":
+        }
+        else if (cmd.compareTo("db2") == 0) {
         	logger.info(curPort + " Ready to Backup DB2: " + dbname);
         	BackUpDB2 bd = new BackUpDB2("BackUpDB2Thread",  this.receiveStr);
         	bd.start();
-        	//backupDB2(id, ip, dbname, backname);
-        	break;
-        case "upload":
-        	logger.info(curPort + "Start upload data by ftp");
-        	
-        	break;
-        default:
-        	break;
         }
+//        switch(cmd) {
+//        case "backoracle":
+//        	logger.info(curPort + " Ready to Backup Oracle DB: " + dbname);
+//        	BackUpOracle bo = new BackUpOracle("BackUpOracleThread", this.receiveStr);
+//        	bo.start();
+//        	break;
+//        case "db2":
+//        	logger.info(curPort + " Ready to Backup DB2: " + dbname);
+//        	BackUpDB2 bd = new BackUpDB2("BackUpDB2Thread",  this.receiveStr);
+//        	bd.start();
+//        	//backupDB2(id, ip, dbname, backname);
+//        	break;
+//        case "upload":
+//        	logger.info(curPort + "Start upload data by ftp");
+//        	
+//        	break;
+//        default:
+//        	break;
+//        }
 	}
 
 	public void start() {

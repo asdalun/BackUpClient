@@ -49,7 +49,10 @@ public class BackUpClient {
 			ReceiveMessage rm1 = new ReceiveMessage("T1");
 			rm1.start();
 			ReceiveMessage rm2 = new ReceiveMessage("T2");
-			rm2.start();	
+			rm2.start();
+			//测试线程 T3
+//			ReceiveMessage rm3 = new ReceiveMessage("T3");
+//			rm3.start();
 			Timer timerUpgrade = new Timer();
 			timerUpgrade.schedule(upgradeTask, 5000, ConfigManager.getInstance().getInterval());
 		}

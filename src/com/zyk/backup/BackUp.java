@@ -111,22 +111,32 @@ public class BackUp {
         String backname = cmds[4];//上传的备份文件名称
         String c_flog = cmds[5];  //备份标识
         String savename = cmds[6];//本地保存文件名
-        switch(cmd) {
-        case "backoracle":
+        if (cmd.compareTo("backoracle") == 0) {
         	logger.info(curPort + " Ready to Backup Oracle DB: " + dbname);
-        	backupOracle(id, ip, dbname, backname, c_flog, savename);
-        	break;
-        case "db2":
-        	logger.info(curPort + " Ready to Backup DB2: " + dbname);
-        	backupDB2(id, ip, dbname, backname);
-        	break;
-        case "upload":
-        	logger.info(curPort + "Start upload data by ftp");
-        	
-        	break;
-        default:
-        	break;
+        	BackUpOracle bo = new BackUpOracle("BackUpOracleThread", this.receiveStr);
+        	bo.start();
         }
+        else if (cmd.compareTo("db2") == 0) {
+        	logger.info(curPort + " Ready to Backup DB2: " + dbname);
+        	BackUpDB2 bd = new BackUpDB2("BackUpDB2Thread",  this.receiveStr);
+        	bd.start();
+        }
+//        switch(cmd) {
+//        case "backoracle":
+//        	logger.info(curPort + " Ready to Backup Oracle DB: " + dbname);
+//        	backupOracle(id, ip, dbname, backname, c_flog, savename);
+//        	break;
+//        case "db2":
+//        	logger.info(curPort + " Ready to Backup DB2: " + dbname);
+//        	backupDB2(id, ip, dbname, backname);
+//        	break;
+//        case "upload":
+//        	logger.info(curPort + "Start upload data by ftp");
+//        	
+//        	break;
+//        default:
+//        	break;
+//        }
 	}
 	/**
 	 * 得到备份对象目前的工作状态
